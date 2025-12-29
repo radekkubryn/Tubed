@@ -1,0 +1,5 @@
+{
+  "name": "Kulki - Ball Sort Puzzle",
+  "description": "Logiczna gra polegająca na sortowaniu kolorowych kulek w probówkach. Zawiera 40 poziomów, mechanikę ukrytych kulek i mapę postępów.",
+  "requestFramePermissions": []
+}
