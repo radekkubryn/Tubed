@@ -28,12 +28,97 @@
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-12px); }
       }
+      @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-15px) rotate(2deg); }
+      }
+      
+      /* NEW ANIMATIONS */
+      @keyframes shiver {
+        0% { transform: translate(0, 0) rotate(0deg); }
+        25% { transform: translate(1px, 1px) rotate(1deg); }
+        50% { transform: translate(-1px, -1px) rotate(-1deg); }
+        75% { transform: translate(1px, -1px) rotate(1deg); }
+        100% { transform: translate(0, 0) rotate(0deg); }
+      }
+      
+      @keyframes ooze {
+        0%, 100% { transform: scale(1, 1); }
+        50% { transform: scale(1.05, 0.95); }
+      }
+
+      @keyframes float-small {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-3px); }
+      }
+
+      @keyframes shine-sweep {
+        0% { transform: translateX(-150%) rotate(45deg); }
+        20% { transform: translateX(150%) rotate(45deg); }
+        100% { transform: translateX(150%) rotate(45deg); }
+      }
+
+      @keyframes confetti-fall {
+        0% { transform: translateY(-10vh) rotate(0deg); opacity: 1; }
+        100% { transform: translateY(110vh) rotate(720deg); opacity: 0; }
+      }
+
+      @keyframes supernova-explode {
+        0% { transform: scale(0); opacity: 1; }
+        50% { transform: scale(2); opacity: 0.8; }
+        100% { transform: scale(4); opacity: 0; }
+      }
+
+      @keyframes coin-drop {
+        0% { transform: translateY(-100px); opacity: 0; }
+        10% { opacity: 1; }
+        90% { opacity: 1; }
+        100% { transform: translateY(600px); opacity: 0; }
+      }
+
       .animate-victory {
         animation: gentle-bounce 0.8s infinite ease-in-out;
       }
+      .animate-float {
+        animation: float 4s ease-in-out infinite;
+      }
+      .animate-shiver {
+        animation: shiver 2s infinite ease-in-out; /* Slow shivering, faster on interaction handled by shake */
+      }
+      .animate-ooze {
+        animation: ooze 2s infinite ease-in-out;
+      }
+      .animate-float-small {
+        animation: float-small 3s infinite ease-in-out;
+      }
+      .animate-shine {
+        animation: shine-sweep 3s infinite linear;
+      }
+      .animate-supernova {
+        animation: supernova-explode 1s ease-out forwards;
+      }
+      .confetti-piece {
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        animation: confetti-fall 3s linear forwards;
+      }
+      .coin-rain {
+        position: absolute;
+        font-size: 24px;
+        animation: coin-drop 1.5s ease-in forwards;
+      }
     </style>
-    <script type="module" src="/index.tsx"></script>
-  </head>
+  <script type="importmap">
+{
+  "imports": {
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3"
+  }
+}
+</script>
+</head>
   <body class="bg-slate-900 text-white overflow-hidden touch-none">
     <div id="root"></div>
   </body>

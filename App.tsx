@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { ViewState, UserProgress } from './types';
+import { ViewState, UserProgress, TEST_LEVEL_ID } from './types';
 import { getProgress } from './services/storage';
 import MainMenu from './screens/MainMenu';
 import MapScreen from './screens/MapScreen';
 import GameScreen from './screens/GameScreen';
 import Leaderboard from './screens/Leaderboard';
+import RulesScreen from './screens/RulesScreen';
+import ShopScreen from './screens/ShopScreen';
+import LabScreen from './screens/LabScreen';
+import AchievementsScreen from './screens/AchievementsScreen';
+import AdventureScreen from './screens/AdventureScreen';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>('MENU');
@@ -26,9 +31,18 @@ const App: React.FC = () => {
     setView('GAME');
   };
 
+  const handleTestMode = () => {
+    setCurrentLevel(TEST_LEVEL_ID);
+    setView('GAME');
+  };
+
   const handleExitGame = () => {
-    refreshProgress();
-    setView('MAP');
+    if (currentLevel === TEST_LEVEL_ID) {
+      setView('MENU');
+    } else {
+      refreshProgress();
+      setView('MAP');
+    }
   };
 
   const handleBackToMenu = () => {
@@ -43,6 +57,12 @@ const App: React.FC = () => {
         <MainMenu 
             onPlay={handleStartGame} 
             onShowLeaderboard={() => setView('LEADERBOARD')}
+            onShowRules={() => setView('RULES')}
+            onShowShop={() => setView('SHOP')}
+            onShowLab={() => setView('LAB')}
+            onShowAchievements={() => setView('ACHIEVEMENTS')}
+            onShowAdventure={() => setView('ADVENTURE')}
+            onTestMode={handleTestMode}
             progress={progress}
         />
       )}
@@ -62,9 +82,33 @@ const App: React.FC = () => {
         />
       )}
 
+      {view === 'SHOP' && (
+        <ShopScreen onBack={handleBackToMenu} />
+      )}
+
+      {view === 'LAB' && (
+        <LabScreen onBack={handleBackToMenu} />
+      )}
+
+      {view === 'ACHIEVEMENTS' && (
+        <AchievementsScreen onBack={handleBackToMenu} />
+      )}
+
       {view === 'LEADERBOARD' && (
         <Leaderboard 
             progress={progress}
+            onBack={handleBackToMenu}
+        />
+      )}
+
+      {view === 'RULES' && (
+        <RulesScreen 
+            onBack={handleBackToMenu}
+        />
+      )}
+
+      {view === 'ADVENTURE' && (
+        <AdventureScreen 
             onBack={handleBackToMenu}
         />
       )}
