@@ -18,6 +18,9 @@
 
 **Tubed** is a classic "Ball Sort" puzzle game where the objective is to sort colored balls into tubes until each tube contains only one color. It features a progressive difficulty system, sleek dark UI, and smooth animations.
 
+## 🎯 Demo
+http://b0oksos4888cgwkcooo80ss8.91.241.5.172.sslip.io
+
 ## ✨ Features
 
 - **40 Challenging Levels**: From beginner to expert difficulty.
