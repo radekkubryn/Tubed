@@ -1,6 +1,8 @@
+
 import React from 'react';
-import { UserProgress, ACHIEVEMENTS_DATA, MAX_LEVELS } from '../types';
-import { triggerPrestigeReset } from '../services/storage';
+import { UserProgress, ACHIEVEMENTS_DATA, MAX_LEVELS, Language } from '../types';
+import { triggerPrestigeReset, setLanguage } from '../services/storage';
+import { t } from '../services/i18n';
 
 interface Props {
   onPlay: () => void;
@@ -12,6 +14,7 @@ interface Props {
   onShowAdventure: () => void;
   onTestMode: () => void;
   progress: UserProgress;
+  onRefresh: () => void;
 }
 
 const MainMenu: React.FC<Props> = ({ 
@@ -23,9 +26,11 @@ const MainMenu: React.FC<Props> = ({
   onShowAchievements, 
   onShowAdventure,
   onTestMode, 
-  progress 
+  progress,
+  onRefresh
 }) => {
-  
+  const lang = progress.language;
+
   const claimableCount = ACHIEVEMENTS_DATA.filter(a => {
       const current = progress.achievementsProgress[a.id] || 0;
       const claimed = progress.achievementsClaimed[a.id];
@@ -38,11 +43,17 @@ const MainMenu: React.FC<Props> = ({
       window.location.search.includes('dev=true');
 
   const handlePrestige = () => {
-      if (confirm("Czy na pewno chcesz wykonać PRESTIŻ? Zresetujesz poziomy do 1, ale zachowasz monety, przedmioty, pety i artefakty. Zyskasz +100% bonusu do monet na stałe!")) {
+      if (confirm(t('prestigeConfirm', lang))) {
           if (triggerPrestigeReset()) {
-              window.location.reload();
+              onRefresh();
           }
       }
+  };
+
+  const handleToggleLanguage = () => {
+      const nextLang: Language = lang === 'en' ? 'pl' : 'en';
+      setLanguage(nextLang);
+      onRefresh();
   };
 
   const totalStars = (Object.values(progress.stars) as number[]).reduce((a, b) => a + b, 0);
@@ -65,12 +76,20 @@ const MainMenu: React.FC<Props> = ({
               </div>
           </div>
           
-          <button 
-            onClick={onShowRules}
-            className="w-10 h-10 bg-slate-800/50 backdrop-blur-md rounded-full flex items-center justify-center border border-slate-700 shadow-md hover:bg-slate-700 transition-colors"
-          >
-              <span className="text-xl">❔</span>
-          </button>
+          <div className="flex gap-2">
+            <button 
+              onClick={handleToggleLanguage}
+              className="w-10 h-10 bg-slate-800/50 backdrop-blur-md rounded-full flex items-center justify-center border border-slate-700 shadow-md hover:bg-slate-700 transition-colors font-bold text-xs"
+            >
+                {lang.toUpperCase()}
+            </button>
+            <button 
+              onClick={onShowRules}
+              className="w-10 h-10 bg-slate-800/50 backdrop-blur-md rounded-full flex items-center justify-center border border-slate-700 shadow-md hover:bg-slate-700 transition-colors"
+            >
+                <span className="text-xl">❔</span>
+            </button>
+          </div>
       </div>
 
       {/* Hero Section */}
@@ -107,9 +126,9 @@ const MainMenu: React.FC<Props> = ({
           </div>
 
           <h1 className="text-5xl font-black text-transparent bg-clip-text bg-gradient-to-b from-white to-slate-400 drop-shadow-sm mb-1 tracking-tight">
-              KULKI
+              {t('gameTitle', lang)}
           </h1>
-          <div className="text-xs uppercase tracking-[0.3em] text-slate-400 font-bold mb-8">Logic Puzzle</div>
+          <div className="text-xs uppercase tracking-[0.3em] text-slate-400 font-bold mb-8">{t('logicPuzzle', lang)}</div>
 
           {/* Big Play Button */}
           <button 
@@ -119,10 +138,10 @@ const MainMenu: React.FC<Props> = ({
             <div className="absolute inset-0 bg-white/10 group-hover:bg-white/20 transition-colors"></div>
             <div className="relative flex flex-col items-center">
                 <span className="text-2xl font-bold tracking-wider text-white drop-shadow-md">
-                    {progress.unlockedLevel > 1 ? 'KONTYNUUJ' : 'GRAJ'}
+                    {progress.unlockedLevel > 1 ? t('continue', lang) : t('play', lang)}
                 </span>
                 <span className="text-xs font-bold text-indigo-200 mt-1 uppercase tracking-widest bg-black/20 px-2 py-0.5 rounded">
-                    Poziom {progress.unlockedLevel}
+                    {t('level', lang)} {progress.unlockedLevel}
                 </span>
             </div>
           </button>
@@ -133,28 +152,28 @@ const MainMenu: React.FC<Props> = ({
           
           <button onClick={onShowAdventure} className="bg-slate-800/60 hover:bg-teal-900/50 border border-slate-700 hover:border-teal-500/50 backdrop-blur-sm p-3 rounded-2xl flex flex-col items-center gap-1 transition-all">
               <span className="text-2xl">🧭</span>
-              <span className="text-xs font-bold text-slate-300">Wyprawa</span>
+              <span className="text-xs font-bold text-slate-300">{t('adventure', lang)}</span>
           </button>
 
           <button onClick={onShowLab} className="bg-slate-800/60 hover:bg-purple-900/50 border border-slate-700 hover:border-purple-500/50 backdrop-blur-sm p-3 rounded-2xl flex flex-col items-center gap-1 transition-all">
               <span className="text-2xl">🧪</span>
-              <span className="text-xs font-bold text-slate-300">Lab</span>
+              <span className="text-xs font-bold text-slate-300">{t('lab', lang)}</span>
           </button>
 
           <button onClick={onShowShop} className="bg-slate-800/60 hover:bg-yellow-900/50 border border-slate-700 hover:border-yellow-500/50 backdrop-blur-sm p-3 rounded-2xl flex flex-col items-center gap-1 transition-all">
               <span className="text-2xl">🛒</span>
-              <span className="text-xs font-bold text-slate-300">Sklep</span>
+              <span className="text-xs font-bold text-slate-300">{t('shop', lang)}</span>
           </button>
 
           <button onClick={onShowLeaderboard} className="bg-slate-800/60 hover:bg-blue-900/50 border border-slate-700 hover:border-blue-500/50 backdrop-blur-sm p-3 rounded-2xl flex flex-col items-center gap-1 transition-all">
               <span className="text-2xl">🏆</span>
-              <span className="text-xs font-bold text-slate-300">Ranking</span>
+              <span className="text-xs font-bold text-slate-300">{t('leaderboard', lang)}</span>
           </button>
 
           {/* Full Width Achievements */}
           <button onClick={onShowAchievements} className="col-span-2 bg-slate-800/60 hover:bg-slate-700/60 border border-slate-700 backdrop-blur-sm p-3 rounded-2xl flex items-center justify-center gap-3 transition-all relative">
               <span className="text-2xl">🏅</span>
-              <span className="text-sm font-bold text-slate-200">Moje Trofea</span>
+              <span className="text-sm font-bold text-slate-200">{t('trophies', lang)}</span>
               {claimableCount > 0 && (
                  <div className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full animate-bounce shadow-sm border border-slate-900 font-bold">
                      {claimableCount}
@@ -170,7 +189,7 @@ const MainMenu: React.FC<Props> = ({
                   onClick={handlePrestige}
                   className="px-4 py-1.5 bg-gradient-to-r from-amber-600 to-yellow-600 rounded-full border border-yellow-400/50 shadow-lg animate-pulse text-white font-bold text-[10px] tracking-wider uppercase"
               >
-                  ✨ PRESTIŻ (x{progress.prestigeLevel + 1}) ✨
+                  ✨ {t('prestige', lang)} (x{progress.prestigeLevel + 1}) ✨
               </button>
           )}
 

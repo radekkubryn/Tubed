@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { ViewState, UserProgress, TEST_LEVEL_ID } from './types';
 import { getProgress } from './services/storage';
@@ -16,7 +17,6 @@ const App: React.FC = () => {
   const [currentLevel, setCurrentLevel] = useState<number>(1);
   const [progress, setProgress] = useState<UserProgress>(getProgress());
 
-  // Reload progress when entering views that might have changed data
   const refreshProgress = () => {
     setProgress(getProgress());
   };
@@ -51,7 +51,6 @@ const App: React.FC = () => {
   };
 
   return (
-    // h-[100dvh] ensures full height on mobile browsers with address bars
     <div className="w-full h-[100dvh] max-w-md mx-auto bg-slate-900 shadow-2xl relative overflow-hidden">
       {view === 'MENU' && (
         <MainMenu 
@@ -64,6 +63,7 @@ const App: React.FC = () => {
             onShowAdventure={() => setView('ADVENTURE')}
             onTestMode={handleTestMode}
             progress={progress}
+            onRefresh={refreshProgress}
         />
       )}
       
