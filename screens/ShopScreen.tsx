@@ -1,7 +1,9 @@
+
 import React, { useState } from 'react';
-import { UserProgress, POWERUP_COSTS, PowerUpType, POWERUP_UNLOCK_REQUIREMENTS, LAB_ITEMS_DATA } from '../types';
+import { UserProgress, POWERUP_COSTS, PowerUpType, POWERUP_UNLOCK_REQUIREMENTS, LAB_ITEMS_DATA, Language } from '../types';
 import { buyPowerUp, getProgress } from '../services/storage';
 import { audio } from '../services/audio';
+import { t } from '../services/i18n';
 
 interface Props {
   onBack: () => void;
@@ -10,35 +12,36 @@ interface Props {
 const ShopScreen: React.FC<Props> = ({ onBack }) => {
   const [progress, setProgress] = useState<UserProgress>(getProgress());
   const [feedback, setFeedback] = useState<string | null>(null);
+  const lang = progress.language;
 
   const handleBuy = (type: PowerUpType) => {
     const cost = POWERUP_COSTS[type];
     if (buyPowerUp(type, cost)) {
         audio.playSelect();
         setProgress(getProgress());
-        setFeedback(`Kupiono: ${type}!`);
+        setFeedback(lang === 'pl' ? `Kupiono: ${getLabel(type)}!` : `Bought: ${getLabel(type)}!`);
         setTimeout(() => setFeedback(null), 1500);
     } else {
         audio.playInvalid();
-        setFeedback("Za mało monet!");
+        setFeedback(lang === 'pl' ? "Za mało monet!" : "Not enough coins!");
         setTimeout(() => setFeedback(null), 1500);
     }
   };
 
   const getLabel = (type: string) => {
-      switch(type) {
-          case 'undo': return 'Cofnij';
-          case 'wand': return 'Różdżka';
-          case 'pickaxe': return 'Kilof';
-          case 'flame': return 'Miotacz';
-          case 'xray': return 'Rentgen';
-          case 'hammer': return 'Młot';
-          case 'paint': return 'Pędzel';
-          case 'magnet': return 'Magnes';
-          case 'swap': return 'Zamiana';
-          case 'pocket': return 'Kieszeń';
-          default: return type;
-      }
+      const labels: Record<string, Record<Language, string>> = {
+          undo: { en: 'Undo', pl: 'Cofnij' },
+          wand: { en: 'Wand', pl: 'Różdżka' },
+          pickaxe: { en: 'Pickaxe', pl: 'Kilof' },
+          flame: { en: 'Flame', pl: 'Miotacz' },
+          xray: { en: 'X-Ray', pl: 'Rentgen' },
+          hammer: { en: 'Hammer', pl: 'Młot' },
+          paint: { en: 'Paint', pl: 'Pędzel' },
+          magnet: { en: 'Magnet', pl: 'Magnes' },
+          swap: { en: 'Swap', pl: 'Zamiana' },
+          pocket: { en: 'Pocket', pl: 'Kieszeń' }
+      };
+      return labels[type]?.[lang] || type;
   };
 
   const getIcon = (type: string) => {
@@ -59,7 +62,7 @@ const ShopScreen: React.FC<Props> = ({ onBack }) => {
 
   const getRequirementName = (reqId: string) => {
       const item = LAB_ITEMS_DATA.find(i => i.id === reqId);
-      return item ? item.name : 'Nieznany przedmiot';
+      return item ? item.name[lang] : (lang === 'pl' ? 'Nieznany przedmiot' : 'Unknown item');
   };
 
   return (
@@ -68,7 +71,7 @@ const ShopScreen: React.FC<Props> = ({ onBack }) => {
         <button onClick={onBack} className="text-white">
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
         </button>
-        <h1 className="text-xl font-bold text-yellow-500">SKLEP</h1>
+        <h1 className="text-xl font-bold text-yellow-500 uppercase">{t('shop', lang)}</h1>
         <div className="flex items-center gap-1 font-mono text-yellow-300">
             <span>{progress.coins}</span> 🪙
         </div>
@@ -82,7 +85,7 @@ const ShopScreen: React.FC<Props> = ({ onBack }) => {
         )}
         
         <div className="text-xs text-slate-400 mb-4 text-center">
-            Rozbuduj Laboratorium, aby odblokować nowe przedmioty!
+            {lang === 'pl' ? 'Rozbuduj Laboratorium, aby odblokować nowe przedmioty!' : 'Expand your Lab to unlock new items!'}
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -100,7 +103,7 @@ const ShopScreen: React.FC<Props> = ({ onBack }) => {
                         
                         {!isLocked ? (
                             <>
-                                <div className="text-xs text-slate-400 mb-2">Posiadasz: {progress.inventory[type] || 0}</div>
+                                <div className="text-xs text-slate-400 mb-2">{t('owned', lang)}: {progress.inventory[type] || 0}</div>
                                 <button 
                                     onClick={() => handleBuy(type)}
                                     className="w-full py-2 bg-yellow-600 hover:bg-yellow-500 text-white font-bold rounded-lg flex items-center justify-center gap-1 active:scale-95 transition-all"
@@ -112,7 +115,7 @@ const ShopScreen: React.FC<Props> = ({ onBack }) => {
                             <>
                                 <div className="absolute inset-0 bg-slate-900/60 flex flex-col items-center justify-center text-center p-2 backdrop-blur-[1px]">
                                     <span className="text-2xl mb-1">🔒</span>
-                                    <div className="text-[10px] text-red-400 font-bold uppercase">Wymaga:</div>
+                                    <div className="text-[10px] text-red-400 font-bold uppercase">{lang === 'pl' ? 'Wymaga' : 'Requires'}:</div>
                                     <div className="text-xs text-white font-semibold leading-tight">{getRequirementName(reqId!)}</div>
                                 </div>
                             </>
