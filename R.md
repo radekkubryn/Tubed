@@ -66,7 +66,6 @@ http://b0oksos4888cgwkcooo80ss8.91.241.5.172.sslip.io
 4. Open [http://localhost:5173](http://localhost:5173) in your browser.
 
 ## 📜 License
-
 Distributed under the MIT License. See `LICENSE` for more information.
 
 ---

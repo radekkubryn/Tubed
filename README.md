@@ -67,6 +67,6 @@ http://b0oksos4888cgwkcooo80ss8.91.241.5.172.sslip.io
 
 ## 📜 License
 
-Distributed under the MIT License. See `LICENSE` for more information.
+Distributed under the MIT License. See `LICENSE` for more information..
 
 ---
